@@ -85,14 +85,16 @@ function draw() {
                    {frac: [11/5, 8/5, 6/5, 5/5, 4/5, 3/5, 2/5, 1/5]},
                   {frac: [8/5, 6/5, 4/5, 2/5, 2/5, 4/5, 6/5, 8/5]}];
   
-  nRow = random([4, 6, 8]);
-  nCol = nRow + Math.floor(random(1, 3));
+  rowOpts = [4, 6, 8];
+  nRow = rowOpts[Math.floor(fxrand()*rowOpts.length)];
+  console.log(nRow);
+  nCol = nRow + Math.floor(fxrand()*4);
   
   rectFrac = [];
   
   if(disorderLevelType == "minimal") {
     rectNoise = 0.3;
-    whichFrac = Math.floor(random(rectFracMinimal.length));
+    whichFrac = Math.floor(fxrand()*rectFracMinimal.length);
     
     for(let i = 0; i < nRow; i++) {
       if(i % 2 == 0) {
@@ -105,11 +107,14 @@ function draw() {
     rectNoise = 0.5;
 
     if(nRow == 4) {
-      whichFrac = random([0,1]);
+      rowOpts = [0, 1];
+      whichFrac = Math.floor(fxrand()*rowOpts.length);
     } else if(nRow == 6) {
-      whichFrac = random([2,3]);
+      rowOpts = [2, 3];
+      whichFrac = Math.floor(fxrand()*rowOpts.length);
     } else if(nRow == 8) {
-      whichFrac = random([4,5]);
+      rowOpts = [4, 5];
+      whichFrac = Math.floor(fxrand()*rowOpts.length);
     }
     
     for(let i = 0; i < nRow; i++) {
@@ -195,7 +200,7 @@ function draw() {
         if(noiseVal <= rectNoise) {
           shrinkVal = map(noiseVal, 0, 1, 0.25, 1);
           newRectHeight = (rectHeight0[l] - gap)*shrinkVal;
-          topOrBottom = random(1);
+          topOrBottom = fxrand();
           
           if(topOrBottom < .5) {
             initXCoords.push(x);
