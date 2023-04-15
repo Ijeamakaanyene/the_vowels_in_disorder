@@ -28,22 +28,24 @@ let popColors = [
   "#777696"
 ]
 
-window.$fxhashFeatures = {};
 features = { };
 
 function makeFeatures() {
+  // exposed features
   vowelOpts = ["A", "E", "I", "O", "U"];
   features.vowelSel = Math.floor(fxrand() * vowelOpts.length);
+  features.vowel = vowelOpts[features.vowelSel];
   
   disorderOpts = ["color", "size", "splits", "shrink"];
   features.disorderType = disorderOpts[Math.floor(fxrand() * disorderOpts.length)];
   
   disorderLevel = ["minimal", "chaos"];
   features.disorderLevelType = disorderLevel[Math.floor(fxrand() * disorderLevel.length)];
-  
-  window.$fxhashFeatures["Vowel"] = vowelOpts[features.vowelSel];
-  window.$fxhashFeatures["Disorder Type"] = features.disorderType;
-  window.$fxhashFeatures["Disorder Level"] = features.disorderLevelType;
+
+  // internal features
+  rowOpts = [4, 6, 8];
+  features.nRow = rowOpts[Math.floor(fxrand()*rowOpts.length)];
+  features.nCol = features.nRow + Math.floor(fxrand()*4);
   
 }
 
@@ -56,7 +58,14 @@ function gridSetUp(width, height) {
 }
 
 makeFeatures();
-console.log(window.$fxhashFeatures);
+$fx.features({
+  "Vowel": features.vowel,
+  "Disorder Type": features.disorderType,
+  "Disorder Level": features.disorderLevelType
+});
+
+console.log($fx.getFeatures());
+console.log(features.nRow);
 
 function setup() {
   gridSetUp(windowWidth, windowHeight);
@@ -85,10 +94,8 @@ function draw() {
                    {frac: [11/5, 8/5, 6/5, 5/5, 4/5, 3/5, 2/5, 1/5]},
                   {frac: [8/5, 6/5, 4/5, 2/5, 2/5, 4/5, 6/5, 8/5]}];
   
-  rowOpts = [4, 6, 8];
-  nRow = rowOpts[Math.floor(fxrand()*rowOpts.length)];
-  console.log(nRow);
-  nCol = nRow + Math.floor(fxrand()*4);
+  nRow = features.nRow;
+  nCol = features.nCol;
   
   rectFrac = [];
   
@@ -108,13 +115,13 @@ function draw() {
 
     if(nRow == 4) {
       rowOpts = [0, 1];
-      whichFrac = Math.floor(fxrand()*rowOpts.length);
+      whichFrac = rowOpts[Math.floor(fxrand()*rowOpts.length)];
     } else if(nRow == 6) {
       rowOpts = [2, 3];
-      whichFrac = Math.floor(fxrand()*rowOpts.length);
+      whichFrac = rowOpts[Math.floor(fxrand()*rowOpts.length)];
     } else if(nRow == 8) {
       rowOpts = [4, 5];
-      whichFrac = Math.floor(fxrand()*rowOpts.length);
+      whichFrac = rowOpts[Math.floor(fxrand()*rowOpts.length)];
     }
     
     for(let i = 0; i < nRow; i++) {
@@ -137,7 +144,7 @@ function draw() {
     if(disorderType == "size") {
        if(l == 0) {
          rowStarts.push(0);
-         rectHeight0.push(rectHeight*rectFrac[0]);
+         rectHeight0.push(rectHeight*rectFrac[l]);
        } else {
          curStart = rowStarts[l - 1] + rectHeight0[l - 1] + gap;
          rowStarts.push(curStart);
@@ -198,7 +205,7 @@ function draw() {
       } else if(disorderType == "shrink") { 
         
         if(noiseVal <= rectNoise) {
-          shrinkVal = map(noiseVal, 0, 1, 0.25, 1);
+          shrinkVal = map(noiseVal, 0, 1, 0.25, 0.75);
           newRectHeight = (rectHeight0[l] - gap)*shrinkVal;
           topOrBottom = fxrand();
           
@@ -274,7 +281,7 @@ function draw() {
 
    i = 0;
    while (i != 1) {
-    if ((isFxpreview = true)) {fxpreview(); i = 1;}
+    if (($fx.isPreview = true)) {$fx.preview(); i = 1;}
   }
 
 }
@@ -282,7 +289,7 @@ function draw() {
 
 function keyPressed() {
   if(key == "s") {
-    saveCanvas("the_vowels_in_disorder_" + fxhash, "png");
+    saveCanvas("the_vowels_in_disorder_" + $fx.hash, "png");
   }
 }
 
