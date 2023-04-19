@@ -16,19 +16,18 @@ let blackColor = [
 
 let coreColors = [
   "#333333",
-  "#ddcbbf",
-  "#3a4664"
+  "#afa69e",
+  "#32363f",
+  "#2e3853"
 ];
 
 let popColors = [
-  "#bb3939",
-  "#ddcbbf",
-  "#a3b18a", 
-  "#e76f51",
-  "#777696"
-]
+  "#bb3939", 
+  "#afa69e", 
+  "#a3b18a"
+];
 
-features = { };
+features = { }
 
 function makeFeatures() {
   // exposed features
@@ -38,14 +37,15 @@ function makeFeatures() {
   
   disorderOpts = ["color", "size", "splits", "shrink"];
   features.disorderType = disorderOpts[Math.floor(fxrand() * disorderOpts.length)];
-  
+
   disorderLevel = ["minimal", "chaos"];
   features.disorderLevelType = disorderLevel[Math.floor(fxrand() * disorderLevel.length)];
 
   // internal features
   rowOpts = [4, 6, 8];
+  colOptsIncr = [1, 2, 3];
   features.nRow = rowOpts[Math.floor(fxrand()*rowOpts.length)];
-  features.nCol = features.nRow + Math.floor(fxrand()*4);
+  features.nCol = features.nRow + colOptsIncr[Math.floor(fxrand()*colOptsIncr.length)];
   
 }
 
@@ -58,14 +58,13 @@ function gridSetUp(width, height) {
 }
 
 makeFeatures();
+
 $fx.features({
   "Vowel": features.vowel,
   "Disorder Type": features.disorderType,
   "Disorder Level": features.disorderLevelType
 });
 
-console.log($fx.getFeatures());
-console.log(features.nRow);
 
 function setup() {
   gridSetUp(windowWidth, windowHeight);
@@ -169,8 +168,8 @@ function draw() {
   initRectHeight = [];
   
   printColor = blackColor;
-  selectedColor = random(coreColors);
-  contrastColor = random(popColors);
+  selectedColor = coreColors[Math.floor(fxrand()*coreColors.length)];
+  contrastColor = popColors[Math.floor(fxrand()*popColors.length)];
   colorMode(HSB);
   
   // creating x, y coords for larger squares 
@@ -314,7 +313,7 @@ const RGBToHSB = (r, g, b) => {
   const h =
     n === 0 ? 0 : n && v === r ? (g - b) / n : v === g ? 2 + (b - r) / n : 4 + (r - g) / n;
   return [60 * (h < 0 ? h + 6 : h), v && (n / v) * 100, v * 100];
-};
+}
 
 
 function discolorSquare(hex) {
