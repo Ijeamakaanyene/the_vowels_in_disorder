@@ -35,7 +35,7 @@ function makeFeatures() {
   features.vowelSel = Math.floor(fxrand() * vowelOpts.length);
   features.vowel = vowelOpts[features.vowelSel];
   
-  disorderOpts = ["color", "size", "splits", "shrink"];
+  disorderOpts = ["color", "size", "splits", "shrink", "cleave"];
   features.disorderType = disorderOpts[Math.floor(fxrand() * disorderOpts.length)];
 
   disorderLevel = ["minimal", "chaos"];
@@ -64,6 +64,8 @@ $fx.features({
   "Disorder Type": features.disorderType,
   "Disorder Level": features.disorderLevelType
 });
+
+console.log($fx.getFeatures());
 
 
 function setup() {
@@ -201,6 +203,32 @@ function draw() {
           initRectHeight.push(rectHeight0[l]);
           initColors.push(selectedColor);
         }
+      } else if(disorderType == "cleave") { 
+        if(noiseVal <= rectNoise) {
+          fracOpts = [1/4, 3/4, 1/3, 2/3];
+          totalRectHeight = rectHeight0[l] - gap;
+          fracSel = fracOpts[Math.floor(fxrand()*fracOpts.length)];
+          newRectHeight1 = totalRectHeight * fracSel;
+          newRectHeight2 = totalRectHeight * (1-fracSel);
+
+          initYCoords.push(y);
+          initYCoords.push(y + gap + newRectHeight1);
+          initXCoords.push(x);
+          initXCoords.push(x);
+          initRectHeight.push(newRectHeight1);
+          initRectHeight.push(newRectHeight2);
+          
+          initColors.push(selectedColor);
+          initColors.push(selectedColor);
+
+
+        } else {
+          initXCoords.push(x);
+          initYCoords.push(y);
+          initRectHeight.push(rectHeight0[l]);
+          initColors.push(selectedColor);
+        }
+
       } else if(disorderType == "shrink") { 
         
         if(noiseVal <= rectNoise) {
