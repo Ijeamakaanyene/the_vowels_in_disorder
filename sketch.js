@@ -1,5 +1,6 @@
-// The Vowels in Disorder
-// Code by Ijeamaka and copyright Ijeamaka :)
+// Messy Vowels
+// Code by Ijeamaka
+// Copyright (©) 2023 Ijeamaka :)
 // April 2023
 // Twitter: @ijeamaka_a
 
@@ -42,10 +43,14 @@ function makeFeatures() {
   features.disorderLevelType = disorderLevel[Math.floor(fxrand() * disorderLevel.length)];
 
   // internal features
-  rowOpts = [4, 6, 8];
+  rowOpts = [4, 6];
   colOptsIncr = [1, 2, 3];
   features.nRow = rowOpts[Math.floor(fxrand()*rowOpts.length)];
   features.nCol = features.nRow + colOptsIncr[Math.floor(fxrand()*colOptsIncr.length)];
+
+  printColor = blackColor;
+  features.selectedColor = coreColors[Math.floor(fxrand()*coreColors.length)];
+  features.contrastColor = popColors[Math.floor(fxrand()*popColors.length)];
   
 }
 
@@ -70,15 +75,16 @@ console.log($fx.getFeatures());
 
 function setup() {
   gridSetUp(windowWidth, windowHeight);
-  seed = int(fxrand() * 100000);
-  randomSeed(seed);
-  noiseSeed(seed);
+  seed = fxrand() * 999999;
   createCanvas(cWidth, cHeight);
   noLoop();
 }
 
 function draw() {
   background('#fbf9f4');
+
+  randomSeed(seed);
+  noiseSeed(seed);
   
   // features
   vowelSel = features.vowelSel;
@@ -91,9 +97,7 @@ function draw() {
   rectFracChaos = [{frac: [8/5, 2/5, 2/5, 8/5]},
                    {frac: [11/5, 5/5, 3/5, 1/5]}, 
                    {frac: [10/5, 8/5, 6/5, 3/5, 2/5, 1/5]}, 
-                   {frac: [10/5, 4/5, 1/5, 1/5, 4/5, 10/5]},
-                   {frac: [11/5, 8/5, 6/5, 5/5, 4/5, 3/5, 2/5, 1/5]},
-                  {frac: [8/5, 6/5, 4/5, 2/5, 2/5, 4/5, 6/5, 8/5]}];
+                   {frac: [10/5, 4/5, 1/5, 1/5, 4/5, 10/5]}];
   
   nRow = features.nRow;
   nCol = features.nCol;
@@ -101,7 +105,7 @@ function draw() {
   rectFrac = [];
   
   if(disorderLevelType == "minimal") {
-    rectNoise = 0.3;
+    rectNoise = 0.35;
     whichFrac = Math.floor(fxrand()*rectFracMinimal.length);
     
     for(let i = 0; i < nRow; i++) {
@@ -119,9 +123,6 @@ function draw() {
       whichFrac = rowOpts[Math.floor(fxrand()*rowOpts.length)];
     } else if(nRow == 6) {
       rowOpts = [2, 3];
-      whichFrac = rowOpts[Math.floor(fxrand()*rowOpts.length)];
-    } else if(nRow == 8) {
-      rowOpts = [4, 5];
       whichFrac = rowOpts[Math.floor(fxrand()*rowOpts.length)];
     }
     
@@ -170,8 +171,8 @@ function draw() {
   initRectHeight = [];
   
   printColor = blackColor;
-  selectedColor = coreColors[Math.floor(fxrand()*coreColors.length)];
-  contrastColor = popColors[Math.floor(fxrand()*popColors.length)];
+  selectedColor = features.selectedColor;
+  contrastColor = features.contrastColor;
   colorMode(HSB);
   
   // creating x, y coords for larger squares 
@@ -205,11 +206,10 @@ function draw() {
         }
       } else if(disorderType == "cleave") { 
         if(noiseVal <= rectNoise) {
-          fracOpts = [1/4, 3/4, 1/3, 2/3];
+          cleaveVal = map(noiseVal, 0, rectNoise, 0.1, 0.9);
           totalRectHeight = rectHeight0[l] - gap;
-          fracSel = fracOpts[Math.floor(fxrand()*fracOpts.length)];
-          newRectHeight1 = totalRectHeight * fracSel;
-          newRectHeight2 = totalRectHeight * (1-fracSel);
+          newRectHeight1 = totalRectHeight * cleaveVal;
+          newRectHeight2 = totalRectHeight * (1-cleaveVal);
 
           initYCoords.push(y);
           initYCoords.push(y + gap + newRectHeight1);
@@ -232,7 +232,7 @@ function draw() {
       } else if(disorderType == "shrink") { 
         
         if(noiseVal <= rectNoise) {
-          shrinkVal = map(noiseVal, 0, 1, 0.25, 0.75);
+          shrinkVal = map(noiseVal, 0, rectNoise, 0.25, 0.75);
           newRectHeight = (rectHeight0[l] - gap)*shrinkVal;
           topOrBottom = fxrand();
           
