@@ -70,7 +70,7 @@ $fx.features({
   "Disorder Level": features.disorderLevelType
 });
 
-console.log($fx.getFeatures());
+// console.log($fx.getFeatures());
 
 
 function setup() {
@@ -105,7 +105,7 @@ function draw() {
   rectFrac = [];
   
   if(disorderLevelType == "minimal") {
-    rectNoise = 0.35;
+    rectNoise = 0.3;
     whichFrac = Math.floor(fxrand()*rectFracMinimal.length);
     
     for(let i = 0; i < nRow; i++) {
@@ -181,7 +181,7 @@ function draw() {
     
     for(let k = 0; k < nCol; k++) {
       x = outerMarginX + k*(rectWidth);
-      noiseVal = noise(x, y);
+      noiseVal = noise(k, l);
       
       if(disorderType == "splits") {
         if(noiseVal <= rectNoise) {
